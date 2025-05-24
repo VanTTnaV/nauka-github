@@ -1,0 +1,66 @@
+name: Sprawdź HTML i CSS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Pobierz kod
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Zainstaluj narzędzia
+      run: |
+        npm install -g html-validate
+        echo "Zainstalowano narzędzia do walidacji"
+    
+    - name: Sprawdź czy pliki istnieją
+      run: |
+        echo "📁 Sprawdzam pliki w repo:"
+        ls -la
+        echo ""
+        if [ -f index.html ]; then
+          echo "✅ index.html - OK"
+        else
+          echo "❌ Brak index.html"
+          exit 1
+        fi
+        
+        if [ -f style.css ]; then
+          echo "✅ style.css - OK"
+        else
+          echo "❌ Brak style.css"
+          exit 1
+        fi
+    
+    - name: Sprawdź HTML
+      run: |
+        echo "🔍 Sprawdzam poprawność HTML..."
+        if html-validate index.html; then
+          echo "✅ HTML jest poprawny!"
+        else
+          echo "❌ Błędy w HTML"
+          exit 1
+        fi
+    
+    - name: Zlicz linie kodu
+      run: |
+        echo "📊 Statystyki projektu:"
+        echo "HTML: $(wc -l < index.html) linii"
+        echo "CSS: $(wc -l < style.css) linii"
+        echo "Razem: $(($(wc -l < index.html) + $(wc -l < style.css))) linii kodu"
+    
+    - name: Sukces!
+      run: |
+        echo "🎉 Wszystkie testy przeszły!"
+        echo "Twoja strona jest gotowa do publikacji!"
