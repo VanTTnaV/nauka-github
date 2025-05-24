@@ -1,0 +1,36 @@
+name: Hello World
+
+# Kiedy uruchomić - gdy pushujemy na main lub robimy PR
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Zadania do wykonania
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Say hello
+      run: echo "Witaj z GitHub Actions!"
+      
+    - name: Show date
+      run: date
+      
+    - name: List files
+      run: ls -la
+      
+    - name: Check HTML file
+      run: |
+        if [ -f index.html ]; then
+          echo "✅ Plik index.html istnieje!"
+          echo "Zawartość pliku:"
+          cat index.html
+        else
+          echo "❌ Brak pliku index.html"
+        fi
